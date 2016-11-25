@@ -1,0 +1,116 @@
+@import 'https://fonts.googleapis.com/css?family=Roboto';
+@import 'compass/css3';
+
+html,
+body {
+  margin: 0;
+  font-family: Roboto, sans-serif;
+  font-size: 16px;
+}
+
+.cf {
+  &:before,
+  &:after {
+    content: "";
+    display: table;
+  }
+  &:after {
+    clear: both;
+  }
+}
+
+.button {
+  font-size: 18px;
+  border: 1px solid #ccc;
+  padding: 10px 25px;
+  background: none;
+  outline: none;
+  @include border-radius(3px);
+}
+
+.pa-view,
+.pa-create {
+  display: none;  }
+
+.show {
+  .pa-view,
+  .pa-create {
+    display: block;
+  }
+}
+
+.cmm-container,
+.fieldset {
+  max-width: 768px;
+  margin: 50px auto;
+}
+
+.fieldset {
+  @extend .cf;
+  margin-bottom: 100px;
+
+  .info,
+  .address {
+    padding: 0 5px;
+    width: 45%;
+  }
+
+  .info {
+    float: left;
+  }
+
+  .address {
+    float: right;
+    .button {
+      margin-top: 20px;
+    }
+  }
+
+  h2 {
+    text-transform: uppercase;
+    border-bottom: 1px solid #ccc;
+    letter-spacing: 5px;
+    padding: 0 10px 5px;
+    //text-align: right;
+  }
+
+  label {
+    padding: 0 10px;
+    text-transform: capitalize;
+    font-size: 14px;
+    color: #999;
+  }
+
+  input {
+    display: block;
+    width: 100%;
+    margin: 3px 0 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    @include box-sizing(border-box);
+  }
+}
+
+.form-container {
+  padding: 0;
+  list-style: none;
+
+  li {
+    position: relative;
+    margin: 0;
+    padding: 5px;
+    img {
+      display: none;
+      position: absolute;
+      left: 50%;
+      top: -100px;
+      height: 300px;
+    }
+    &:hover {
+      img {
+        display: block;
+      }
+    }
+  }
+}
