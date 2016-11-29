@@ -103,8 +103,9 @@ var epaModule = (function epaModule(doc) {
         //pa.req(viewOption, pa.createPaForm);
         pa.req(viewOption, function(resp){
             var q = resp.request_page.forms.pa_request.question_sets;
+            var nextQ = "";
 
-            //console.log(q);
+            console.log(q);
 
             var paCreate = document.querySelector('.pa-create');
             var fieldSet = document.createElement('div');
@@ -116,8 +117,13 @@ var epaModule = (function epaModule(doc) {
 
             for(var i=0, max=q[1].questions.length; i<max; i++) {
                 var qObj = q[1].questions[i];
+                nextQ = nextQ === qObj.default_next_question_id;
+
                 var qContainer = document.createElement('div');
+                qContainer.id = qObj.question_id;
                 qContainer.className = "question-container";
+
+                if(nextQ) qContainer.style.display = "none";
 
                 var qLabel = document.createElement('label');
                 qLabel.classList.add("q-label");
@@ -140,11 +146,23 @@ var epaModule = (function epaModule(doc) {
                         cDom.name = qObj.question_id;
 
                         if(!j && !qObj.select_multiple) {
-                            cDom.setAttribute('checked', 'checked');
+                            //cDom.setAttribute('checked', 'checked');
                         }
 
                         cLabel.appendChild(cDom);
                         cLabel.innerHTML += cObj.choice_text;
+
+                        if(cObj.next_question_id) {
+                            cLabel.setAttribute('data-next', cObj.next_question_id);
+                            cLabel.onclick = function() {
+                                var next = this.getAttribute('data-next');
+
+                                if(document.getElementById(next)) {
+                                    document.getElementById(next).style.display = !this.querySelector('input').checked ? "none" : "block";
+                                }
+                            };
+                        }
+
                         qContainer.appendChild(cLabel);
                     }
                 }
@@ -161,6 +179,7 @@ var epaModule = (function epaModule(doc) {
                     qContainer.appendChild(qDom);
                 }
 
+                nextQ = qObj.default_next_question_id;
                 fieldSet.appendChild(qContainer);
             }
 
