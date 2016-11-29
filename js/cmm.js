@@ -1,6 +1,6 @@
 var initOption = {
     api_uri: 'https://api.covermymeds.com/',
-    api_id: '1vd9o4427lyi0ccb2uem'
+    api_id: 'd895441311099b4f52cb' || '1vd9o4427lyi0ccb2uem'
 };
 
 var modules = (function modules(doc) {
@@ -91,14 +91,80 @@ var epaModule = (function epaModule(doc) {
     pa.create = pa.req;
 
     pa.view = function view(token) {
+        token[0] = 'A92FML';
+        token[1] = 'frucrv7l9z5cojmteexk';
         var viewOption = {
             method: 'GET',
-            api_uri: initOption.api_uri + 'requests/' + (token[0] || this.getAttribute('data-req-id')) + "?v=1",
+            api_uri: initOption.api_uri + 'request-pages/' + (token[0] || this.getAttribute('data-req-id')) + "?v=1&nocache=" + new Date().getTime(),
             api_id: initOption.api_id,
             token_id: token[1] || this.getAttribute('data-token-id')
         };
 
-        pa.req(viewOption, pa.createPaForm);
+        //pa.req(viewOption, pa.createPaForm);
+        pa.req(viewOption, function(resp){
+            var q = resp.request_page.forms.pa_request.question_sets;
+
+            //console.log(q);
+
+            var paCreate = document.querySelector('.pa-create');
+            var fieldSet = document.createElement('div');
+            fieldSet.className = 'fieldset';
+            fieldSet.innerHTML = q[0].questions[0].content_html;
+
+            paCreate.innerHTML = "";
+            paCreate.appendChild(fieldSet);
+
+            for(var i=0, max=q[1].questions.length; i<max; i++) {
+                var qObj = q[1].questions[i];
+                var qContainer = document.createElement('div');
+                qContainer.className = "question-container";
+
+                var qLabel = document.createElement('label');
+                qLabel.classList.add("q-label");
+                qLabel.textContent = qObj.question_text;
+                qLabel.for = qObj.question_id;
+                qLabel.classList.add(qObj.flag.toLowerCase());
+
+                qContainer.appendChild(qLabel);
+
+                if(qObj.choices) {
+                    for(var j=0, cmax=qObj.choices.length; j<cmax; j++) {
+                        var cObj = qObj.choices[j];
+                        var cLabel = document.createElement('label');
+                        cLabel.className = "c-label";
+
+                        var cDom = document.createElement('input');
+                        cDom.className = "choices";
+                        cDom.type = qObj.select_multiple ? "checkbox" : "radio";
+                        cDom.value = cObj.choice_id;
+                        cDom.name = qObj.question_id;
+
+                        if(!j && !qObj.select_multiple) {
+                            cDom.setAttribute('checked', 'checked');
+                        }
+
+                        cLabel.appendChild(cDom);
+                        cLabel.innerHTML += cObj.choice_text;
+                        qContainer.appendChild(cLabel);
+                    }
+                }
+
+                if(!/choice/.test(qObj.question_type.toLowerCase())) {
+                    var qDom = document.createElement('input');
+                    var qType = {
+                        "DATE": "text",
+                        "FREE_TEXT": "text"
+                    };
+
+                    qDom.type = qType[qObj.question_type];
+                    qDom.name = qObj.id;
+                    qContainer.appendChild(qDom);
+                }
+
+                fieldSet.appendChild(qContainer);
+            }
+
+        });
     };
 
     pa.getForms = function getForm(val) {

@@ -114,3 +114,26 @@ body {
     }
   }
 }
+
+.question-container {
+  margin-top: 25px;
+  .q-label {
+    display: block;
+    margin: 20px 0 5px;
+    &.required:after {
+      content: "*Required";
+      display: inline-block;
+      margin-left: 5px;
+      color: red;
+    }
+  }
+  .c-label {
+    display: block;
+    padding: 0 15px 5px;
+  }
+  .choices {
+    display: inline-block;
+    width: auto;
+    margin-right: 5px;
+  }
+}
